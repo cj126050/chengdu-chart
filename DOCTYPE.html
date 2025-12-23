@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成都市5A和4A级景区数量变化趋势</title>
+    <!-- 关键修复：已更换为稳定可靠的Chart.js库源 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+        h1 {
+            color: #2c5c7a;
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+        .data-note {
+            background-color: #f0f7ff;
+            border-left: 4px solid #4a90e2;
+            padding: 12px 18px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            border-radius: 0 8px 8px 0;
+        }
+        .data-note h3 {
+            margin-top: 0;
+            color: #2c5c7a;
+            font-size: 1em;
+        }
+        .data-note ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 0.9em;
+        }
+        .legend-color-box {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #888;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <h1>成都市5A和4A级景区数量变化趋势</h1>
+    <p class="subtitle">(本世纪以来)</p>
+
+    <!-- 图表容器 -->
+    <div class="chart-container">
+        <canvas id="scenicSpotsChart"></canvas>
+        <!-- 图例说明 -->
+        <div style="text-align: center; margin-top: 15px;">
+            <div class="legend-item">
+                <span class="legend-color-box" style="background-color: #FF6B6B;"></span>5A级景区
+            </div>
+            <div class="legend-item">
+                <span class="legend-color-box" style="background-color: #4A90E2;"></span>4A级景区
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据说明 -->
+    <div class="data-note">
+        <h3>📊 数据来源与说明：</h3>
+        <ul>
+            <li>图表数据基于公开的年度统计及复核公告整理。</li>
+            <li>2007年以前：成都首个5A景区（青城山-都江堰）产生，4A景区基数较小（约7家）。</li>
+            <li>2018-2022年：4A景区数量快速增长，从约45家增至50家；5A景区在2022年增加至2家（新增安仁古镇）。</li>
+            <li>2023-2025年：4A景区数量经历动态调整，2025年最新统计为49家；5A景区于2025年增至3家（新增天台山）。</li>
+            <li>注：A级景区实行动态管理，个别年份数量会因复核警告、降级或新晋而波动。</li>
+        </ul>
+    </div>
+
+    <footer>
+        数据可视化 | 成都市文化旅游发展统计参考
+    </footer>
+
+    <script>
+        // 图表配置与数据
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('scenicSpotsChart').getContext('2d');
+
+            // 图表数据
+            const chartData = {
+                // 代表年份的标签
+                labels: ['2007年及以前', '2018年', '2022年底', '2023年初', '2025年底'],
+                datasets: [
+                    {
+                        label: '5A级景区数量',
+                        data: [1, 1, 2, 2, 3], // 对应年份的5A景区数量
+                        borderColor: '#FF6B6B',
+                        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3, // 曲线平滑度
+                        yAxisID: 'y' // 使用左侧Y轴
+                    },
+                    {
+                        label: '4A级景区数量',
+                        data: [7, 45, 50, 52, 49], // 对应年份的4A景区数量
+                        borderColor: '#4A90E2',
+                        backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y1' // 使用右侧Y轴
+                    }
+                ]
+            };
+
+            // 图表配置选项
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '年份',
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '5A级景区数量',
+                            color: '#FF6B6B',
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            }
+                        },
+                        min: 0,
+                        max: 3.5,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                return value + ' 家';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 107, 107, 0.1)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '4A级景区数量',
+                            color: '#4A90E2',
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            }
+                        },
+                        min: 0,
+                        max: 55,
+                        ticks: {
+                            stepSize: 10,
+                            callback: function(value) {
+                                return value + ' 家';
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false, // 只在右侧显示网格线，避免与左侧轴重叠
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.y + ' 家';
+                                return label;
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false // 使用自定义图例，这里隐藏默认图例
+                    }
+                }
+            };
+
+            // 创建图表实例
+            const scenicSpotsChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: chartOptions
+            });
+        });
+    </script>
+</body>
+</html>
