@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天府之芯，烟火成都——文旅发展数字全景</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            overflow-x: hidden;
+            background: #000;
+            color: #fff;
+        }
+        
+        /* 英雄区域容器 */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* 视频背景 */
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+        
+        /* 渐变叠加层 - 增强文字可读性 */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.8) 100%);
+            z-index: 2;
+        }
+        
+        /* 标题区域 */
+        .title-container {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+        
+        .main-title {
+            font-size: 3.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            background: linear-gradient(90deg, #ffd700, #ffcc00, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        /* 数据卡片容器 */
+        .data-cards-container {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1400px;
+            padding: 0 20px;
+        }
+        
+        /* 数据卡片 */
+        .data-card {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 280px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+        
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+        }
+        
+        /* 圆环进度条容器 */
+        .circle-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px;
+        }
+        
+        .circle-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .circle-progress {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip-path: polygon(50% 0%, 100% 0, 100% 100%, 0 100%, 0 0);
+        }
+        
+        .circle-progress::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        /* 数据展示 */
+        .data-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            width: 100%;
+        }
+        
+        .data-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .data-unit {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        
+        .data-label {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        /* 恢复率标签 */
+        .recovery-rate {
+            display: inline-block;
+            background: rgba(0, 200, 83, 0.2);
+            color: #4caf50;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        /* 底部导航提示 */
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            text-align: center;
+            opacity: 0.8;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-hint i {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        
+        .scroll-hint p {
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+        
+        /* 动画 */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+        
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate {
+            animation: countUp 1.2s ease-out forwards;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .data-cards-container {
+                gap: 20px;
+            }
+            
+            .data-card {
+                width: 250px;
+                min-height: 300px;
+                padding: 25px;
+            }
+            
+            .main-title {
+                font-size: 3.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .data-cards-container {
+                gap: 20px;
+            }
+            
+            .data-card {
+                width: 220px;
+                min-height: 280px;
+                padding: 20px;
+            }
+            
+            .circle-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .data-value {
+                font-size: 2.2rem;
+            }
+            
+            .main-title {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                height: auto;
+                min-height: 100vh;
+                padding: 100px 0 80px;
+            }
+            
+            .title-container {
+                margin-bottom: 40px;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .data-cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .data-card {
+                width: 320px;
+                min-height: 300px;
+            }
+            
+            .scroll-hint {
+                position: relative;
+                bottom: 0;
+                margin-top: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .data-card {
+                width: 280px;
+                min-height: 280px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 视觉英雄区 -->
+    <section class="hero-section">
+        <!-- 视频背景 -->
+        <div class="video-background">
+            <video autoplay muted loop id="bg-video">
+                <!-- 这里使用一个代表成都古今交融的示例视频 -->
+                <!-- 实际应用中应替换为高质量自定义视频 -->
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-modern-city-with-skyscrapers-41519-large.mp4" type="video/mp4">
+                您的浏览器不支持视频标签。
+            </video>
+        </div>
+        
+        <!-- 渐变叠加层 -->
+        <div class="overlay"></div>
+        
+        <!-- 标题区域 -->
+        <div class="title-container">
+            <h1 class="main-title">天府之芯，烟火成都</h1>
+            <p class="subtitle">文旅发展数字全景 · 2025年度核心数据洞察</p>
+        </div>
+        
+        <!-- 数据卡片容器 -->
+        <div class="data-cards-container">
+            <!-- 卡片1：年接待游客 -->
+            <div class="data-card">
+                <div class="circle-container">
+                    <div class="circle-bg"></div>
+                    <div class="circle-progress" id="progress-1" style="background: conic-gradient(#ffd700 0% 85%, rgba(255, 215, 0, 0.2) 85% 100%);"></div>
+                    <div class="data-display">
+                        <div class="data-value" id="value-1">0</div>
+                        <div class="data-unit">亿人次</div>
+                        <div class="data-label">年接待游客</div>
+                    </div>
+                </div>
+                <div class="data-details">
+                    <p>较2019年增长 <strong style="color:#4caf50;">+18.5%</strong></p>
+                    <p>全国城市排名 <strong>第3位</strong></p>
+                </div>
+            </div>
+            
+            <!-- 卡片2：文旅总收入 -->
+            <div class="data-card">
+                <div class="circle-container">
+                    <div class="circle-bg"></div>
+                    <div class="circle-progress" id="progress-2" style="background: conic-gradient(#ffaa00 0% 90%, rgba(255, 170, 0, 0.2) 90% 100%);"></div>
+                    <div class="data-display">
+                        <div class="data-value" id="value-2">0</div>
+                        <div class="data-unit">亿元</div>
+                        <div class="data-label">文旅总收入</div>
+                    </div>
+                </div>
+                <div class="data-details">
+                    <p>占全市GDP比重 <strong>12.7%</strong></p>
+                    <p>年均增长率 <strong style="color:#4caf50;">+9.8%</strong></p>
+                </div>
+            </div>
+            
+            <!-- 卡片3：A级景区总数 -->
+            <div class="data-card">
+                <div class="circle-container">
+                    <div class="circle-bg"></div>
+                    <div class="circle-progress" id="progress-3" style="background: conic-gradient(#ff6b00 0% 70%, rgba(255, 107, 0, 0.2) 70% 100%);"></div>
+                    <div class="data-display">
+                        <div class="data-value" id="value-3">0</div>
+                        <div class="data-label">A级景区总数</div>
+                    </div>
+                </div>
+                <div class="data-details">
+                    <p>其中5A级景区 <strong style="color:#ffd700;">3个</strong></p>
+                    <p>4A级景区 <strong>45个</strong></p>
+                </div>
+            </div>
+            
+            <!-- 卡片4：入境游客 -->
+            <div class="data-card">
+                <div class="circle-container">
+                    <div class="circle-bg"></div>
+                    <div class="circle-progress" id="progress-4" style="background: conic-gradient(#4caf50 0% 65%, rgba(76, 175, 80, 0.2) 65% 100%);"></div>
+                    <div class="data-display">
+                        <div class="data-value" id="value-4">0</div>
+                        <div class="data-unit">万人次</div>
+                        <div class="data-label">入境游客</div>
+                    </div>
+                </div>
+                <div class="data-details">
+                    <p>恢复至2019年水平</p>
+                    <div class="recovery-rate">恢复率 98.5%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 滚动提示 -->
+        <div class="scroll-hint">
+            <i class="fas fa-chevron-down"></i>
+            <p>向下滑动探索更多</p>
+        </div>
+    </section>
+
+    <!-- 占位内容，展示后续页面 -->
+    <section style="height: 100vh; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; padding: 40px;">
+        <div style="max-width: 800px; text-align: center;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 30px; color: #ffd700;">探索成都文旅全景</h2>
+            <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 30px;">下一屏将为您展示成都市交互式景区资源地图，可视化分析各区县旅游经济发展状况与景区分布特征。</p>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 50px;">
+                <div style="background: #222; padding: 20px; border-radius: 10px; width: 180px;">
+                    <i class="fas fa-map-marked-alt" style="font-size: 2rem; color: #ffaa00; margin-bottom: 15px;"></i>
+                    <h3>景区分布地图</h3>
+                </div>
+                <div style="background: #222; padding: 20px; border-radius: 10px; width: 180px;">
+                    <i class="fas fa-chart-line" style="font-size: 2rem; color: #4caf50; margin-bottom: 15px;"></i>
+                    <h3>经济指标分析</h3>
+                </div>
+                <div style="background: #222; padding: 20px; border-radius: 10px; width: 180px;">
+                    <i class="fas fa-history" style="font-size: 2rem; color: #2196f3; margin-bottom: 15px;"></i>
+                    <h3>发展历程时间轴</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 动态计数器功能
+        function animateValue(elementId, start, end, duration, suffix = "") {
+            const element = document.getElementById(elementId);
+            const startTime = performance.now();
+            const formatNumber = (num) => {
+                if (num >= 10000) {
+                    return (num / 10000).toFixed(1) + "万";
+                }
+                if (num >= 1000) {
+                    return (num / 1000).toFixed(1) + "千";
+                }
+                return num.toLocaleString();
+            };
+            
+            function updateValue(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 使用缓动函数使动画更自然
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const currentValue = Math.floor(start + (end - start) * easeOutQuart);
+                
+                element.textContent = formatNumber(currentValue) + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateValue);
+                }
+            }
+            
+            requestAnimationFrame(updateValue);
+        }
+        
+        // 圆环动画
+        function animateCircle(circleId, targetPercent) {
+            const circle = document.getElementById(circleId);
+            let currentPercent = 0;
+            const duration = 2000; // 动画持续时间
+            const startTime = performance.now();
+            
+            function updateCircle(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 缓动函数
+                const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+                currentPercent = easeOutCubic * targetPercent;
+                
+                // 更新圆环背景
+                const colorMap = {
+                    "progress-1": "#ffd700",
+                    "progress-2": "#ffaa00",
+                    "progress-3": "#ff6b00",
+                    "progress-4": "#4caf50"
+                };
+                
+                const color = colorMap[circleId];
+                circle.style.background = `conic-gradient(${color} 0% ${currentPercent}%, rgba(${parseInt(color.slice(1,3),16)}, ${parseInt(color.slice(3,5),16)}, ${parseInt(color.slice(5,7),16)}, 0.2) ${currentPercent}% 100%)`;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCircle);
+                }
+            }
+            
+            requestAnimationFrame(updateCircle);
+        }
+        
+        // 页面加载完成后启动动画
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // 设置数据卡片动画延迟
+            const dataCards = document.querySelectorAll('.data-card');
+            dataCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 300 + index * 200);
+            });
+            
+            // 启动计数器动画
+            setTimeout(() => {
+                // 年接待游客：3.2亿
+                animateValue("value-1", 0, 3.2, 2000);
+                animateCircle("progress-1", 85);
+                
+                // 文旅总收入：4300亿
+                animateValue("value-2", 0, 4300, 2200);
+                animateCircle("progress-2", 90);
+                
+                // A级景区总数：85个
+                animateValue("value-3", 0, 85, 1800);
+                animateCircle("progress-3", 70);
+                
+                // 入境游客：200万
+                animateValue("value-4", 0, 200, 2100);
+                animateCircle("progress-4", 65);
+            }, 1000);
+            
+            // 视频播放处理
+            const video = document.getElementById('bg-video');
+            video.play().catch(e => {
+                console.log("自动播放被阻止，等待用户交互");
+                // 添加一个覆盖层提示用户点击以播放视频
+                const playOverlay = document.createElement('div');
+                playOverlay.innerHTML = '<div style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:10;"><div style="text-align:center; padding:30px; background:rgba(30,30,30,0.9); border-radius:15px; max-width:500px;"><h3 style="margin-bottom:15px; color:#ffd700;">点击播放背景视频</h3><p style="margin-bottom:20px;">体验成都古今交融的视觉盛宴</p><button id="play-video-btn" style="background:#ffd700; color:#000; border:none; padding:12px 30px; border-radius:30px; font-size:1.1rem; cursor:pointer;">播放视频</button></div></div>';
+                document.querySelector('.hero-section').appendChild(playOverlay);
+                
+                document.getElementById('play-video-btn').addEventListener('click', function() {
+                    video.play();
+                    playOverlay.style.display = 'none';
+                });
+            });
+        });
+        
+        // 监听滚动，暂停计数器直到元素进入视口
+        const observerOptions = {
+            threshold: 0.3
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // 如果元素进入视口，可以触发额外的动画
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+        
+        // 观察数据卡片
+        document.querySelectorAll('.data-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
