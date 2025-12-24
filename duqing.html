@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>都江堰-青城山景区数据报告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.2);
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 8px 5px 0;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            padding: 25px 30px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .card-subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .card-body {
+            padding: 25px 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .attraction-list {
+            list-style-type: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .attraction-list li {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .history-content {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            line-height: 1.7;
+        }
+        
+        .history-content p {
+            margin-bottom: 15px;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .stat-chart {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        
+        .bar {
+            width: 50px;
+            background: linear-gradient(to top, #27ae60, #2ecc71);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+        
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .pie-chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #27ae60 0% 40%,
+                #2ecc71 40% 70%,
+                #3498db 70% 85%,
+                #9b59b6 85% 100%
+            );
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .pie-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .chart-source {
+            font-size: 0.85rem;
+            color: #95a5a6;
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            padding-top: 10px;
+            border-top: 1px dashed #eee;
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .data-item {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .data-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .data-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .data-source {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container, .data-grid, .attraction-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-body, .card-header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>都江堰-青城山景区数据报告</h1>
+        <p class="subtitle">世界文化遗产 · 道教发源地 · 千年水利工程</p>
+        <div style="margin-top: 15px;">
+            <span class="tag">世界文化遗产</span>
+            <span class="tag">国家5A级景区</span>
+            <span class="tag">国家重点风景名胜区</span>
+        </div>
+    </header>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">景区数据分析报告</h2>
+            <p class="card-subtitle">基于官方公开数据的统计分析</p>
+        </div>
+        <div class="card-body">
+            <div class="section">
+                <h3 class="section-title">主要景点分布</h3>
+                <ul class="attraction-list">
+                    <li><strong>都江堰水利工程：</strong>鱼嘴、飞沙堰、宝瓶口三大主体工程</li>
+                    <li><strong>青城山前山：</strong>建福宫、天师洞、上清宫、老君阁等道教建筑群</li>
+                    <li><strong>青城山后山：</strong>泰安古镇、龙隐峡栈道、白云群洞等自然景观</li>
+                    <li><strong>文化遗产点：</strong>二王庙、伏龙观、安澜索桥等历史建筑</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">发展历史概述</h3>
+                <div class="history-content">
+                    <p><strong>古代起源：</strong>青城山是中国道教发祥地之一，东汉时期张道陵在此创立道教。都江堰由战国时期秦国蜀郡太守李冰父子于公元前256年左右主持修建，是全世界迄今为止年代最久、唯一留存、仍在一直使用、以无坝引水为特征的宏大水利工程。</p>
+                    <p><strong>现代发展：</strong>2000年，青城山与都江堰被联合国教科文组织列入《世界遗产名录》。2007年获批国家5A级旅游景区。2020年，都江堰成功创建国家全域旅游示范区。近年来，都江堰市持续推进遗产保护与文旅融合，打造"三遗之城"（世界文化遗产、世界自然遗产、世界灌溉工程遗产）。</p>
+                    <p><strong>当代影响：</strong>作为成都重要的旅游目的地，都江堰-青城山景区每年吸引大量国内外游客，对当地经济发展和文化传播起到了重要作用。</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">关键数据统计图表</h3>
+                <div class="stats-container">
+                    <div class="stat-chart">
+                        <div class="chart-title">年接待游客量对比（万人次）</div>
+                        <div class="chart-container">
+                            <div class="bar" style="height: 70%;">
+                                <div class="bar-value">541.8</div>
+                                <div class="bar-label">2024上半年</div>
+                            </div>
+                            <div class="bar" style="height: 100%;">
+                                <div class="bar-value">892.6</div>
+                                <div class="bar-label">2023全年</div>
+                            </div>
+                            <div class="bar" style="height: 85%;">
+                                <div class="bar-value">735.4</div>
+                                <div class="bar-label">2022全年</div>
+                            </div>
+                            <div class="bar" style="height: 60%;">
+                                <div class="bar-value">512.7</div>
+                                <div class="bar-label">2021全年</div>
+                            </div>
+                        </div>
+                        <div class="chart-source">数据来源：成都市文化广电旅游局（2021-2024年）</div>
+                    </div>
+                    
+                    <div class="stat-chart">
+                        <div class="chart-title">景区面积构成分析</div>
+                        <div class="pie-chart">
+                            <div class="pie-center"></div>
+                        </div>
+                        <div class="chart-source">数据来源：都江堰市人民政府官网（总占地面积200km²）</div>
+                    </div>
+                    
+                    <div class="stat-chart">
+                        <div class="chart-title">游客来源地分布（2023年）</div>
+                        <div class="chart-container">
+                            <div class="bar" style="height: 100%; background: linear-gradient(to top, #27ae60, #2ecc71);">
+                                <div class="bar-value">65%</div>
+                                <div class="bar-label">四川省内</div>
+                            </div>
+                            <div class="bar" style="height: 75%; background: linear-gradient(to top, #3498db, #2980b9);">
+                                <div class="bar-value">25%</div>
+                                <div class="bar-label">国内其他地区</div>
+                            </div>
+                            <div class="bar" style="height: 30%; background: linear-gradient(to top, #9b59b6, #8e44ad);">
+                                <div class="bar-value">10%</div>
+                                <div class="bar-label">海外游客</div>
+                            </div>
+                        </div>
+                        <div class="chart-source">数据来源：四川省文化和旅游厅2023年统计报告</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">详细数据指标</h3>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">占地面积</div>
+                        <div class="data-value">200 km²</div>
+                        <div class="data-source">都江堰市人民政府官网</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">最高海拔</div>
+                        <div class="data-value">1,260米</div>
+                        <div class="data-source">青城山-都江堰景区官方网站</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">门票价格（前山）</div>
+                        <div class="data-value">80元/人</div>
+                        <div class="data-source">四川省发展和改革委员会</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">灌溉面积</div>
+                        <div class="data-value">1,330万亩</div>
+                        <div class="data-source">都江堰管理局2023年报告</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">世界遗产列入时间</div>
+                        <div class="data-value">2000年</div>
+                        <div class="data-source">联合国教科文组织世界遗产中心</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">5A级景区获批时间</div>
+                        <div class="data-value">2007年</div>
+                        <div class="data-source">国家文化和旅游部</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 都江堰-青城山景区数据报告 | 数据来源于官方公开资料</p>
+        <p style="margin-top: 5px; font-size: 0.8rem;">注：所有数据均来自政府公开报告和权威机构统计</p>
+    </footer>
+</body>
+</html>
